@@ -154,6 +154,21 @@ a:hover {
 /* Mobile Media Query*/
 
 @media (max-width: 767px) {
+
+
+.menu-icon{
+    display: block;
+  }
+.nav-list{
+  display: none;
+  flex-direction: column;
+  align-items: center;
+}
+
+.nav-list.show{
+  display: flex;
+}
+
   #About,
   #Experience,
   #Skills,
