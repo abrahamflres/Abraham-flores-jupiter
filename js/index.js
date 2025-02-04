@@ -1,4 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
+    console.log("Document loaded successfully!");
+
     const today = new Date();
     const thisYear = today.getFullYear();
 
@@ -9,13 +11,8 @@ document.addEventListener("DOMContentLoaded", () => {
     footer.appendChild(copyright);
     document.body.appendChild(footer);
 
-    const footerElement = document.querySelector("footer");
-    console.log(footerElement);
-
-
-    const skills = ["JavaScript", "HTML", "CSS", "Python", "MySQL"];
-    const skillsSection = document.querySelector("#Skills");
-    const skillsList = skillsSection.querySelector("ul");
+    const skills = ["JavaScript", "HTML", "CSS", "Python", "SQL"];
+    const skillsList = document.querySelector("#Skills ul");
 
     skills.forEach(skill => {
         const skillItem = document.createElement("li");
@@ -24,50 +21,53 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
 
-    const messageForm = document.forms["leave_message"];
+    const projectSection = document.getElementById("Projects");
+    if (!projectSection) {
+        console.error("projects could not be found");
+        return;
+    }
+
+    const projectList = document.getElementById("projectList");
+  
 
 
-    messageForm.addEventListener("submit", function(event) {
-        event.preventDefault(); 
-
-        const userName = event.target.usersName.value;
-        const userEmail = event.target.usersEmail.value;
-        const userMessage = event.target.usersMessage.value;
-
-        console.log(`Name: ${userName}, Email: ${userEmail}, Message: ${userMessage}`);
-
-
-        const messageSection = document.querySelector("#messages");
-        const messageList = messageSection.querySelector("ul");
-
-
-        const newMessage = document.createElement("li");
-        newMessage.innerHTML = `
-            <a href="mailto:${userEmail}">${userName}</a>: 
-            <span>${userMessage}</span>
-        `;
-
-
-        const removeButton = document.createElement("button");
-        removeButton.innerText = "Remove";
-        removeButton.type = "button";
-
-
-        removeButton.addEventListener("click", function() {
-            const entry = removeButton.parentNode;
-            entry.remove();
+    fetch("https://api.github.com/users/abrahamflres/repos")
+        .then(response => {
+            if (!response.ok) throw new Error(`API error: ${response.status}`);
+            return response.json();
+        })
+        .then(repositories => {
+            console.log("respository's", repositories);
+            displayRepositories(repositories);
+        })
+        .catch(error => {
+            console.error("Error fetching repositories:", error);
+            projectList.innerHTML = `<p style="color: red;">could not load respositories</p>`;
         });
 
+    function displayRepositories(repositories) {
+        projectList.innerHTML = ""; 
 
-        newMessage.appendChild(removeButton);
-        messageList.appendChild(newMessage);
+        if (repositories.length === 0) {
+            projectList.innerHTML = "<p>no projects</p>";
+            return;
+        }
 
-        messageForm.reset();
-    });
+        repositories.forEach(repo => {
+            const projectItem = document.createElement("li");
+            projectItem.classList.add("project-item");
+            projectItem.innerHTML = `
+                <strong>${repo.name}</strong><br>
+                <p>${repo.description || "null description"}</p>
+                <a href="${repo.html_url}" target="_blank">View Repository</a>
+            `;
+            projectList.appendChild(projectItem);
+        });
+    }
 });
-
 
 function toggleMenu() {
     const navList = document.querySelector('.nav-list');
     navList.classList.toggle('show');
 }
+

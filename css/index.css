@@ -108,7 +108,11 @@ a:hover {
 #Projects ul {
   list-style-type: none;
   padding: 0;
+  display: flex; 
+  flex-wrap: wrap; 
+  gap: 10px; 
 }
+
 
 #Projects ul li {
   background-color: #313131;
@@ -116,6 +120,13 @@ a:hover {
   margin: 5px 0;
   border-radius: 5px;
   color: #e0ff42;
+  flex: 1 0 200px;
+  
+}
+
+#Projects ul li a { 
+  display: inline-block; 
+  margin-top: 5px; 
 }
 
 
