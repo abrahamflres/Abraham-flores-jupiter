@@ -20,7 +20,6 @@ document.addEventListener("DOMContentLoaded", () => {
         skillsList.appendChild(skillItem);
     });
 
-
     const projectSection = document.getElementById("Projects");
     if (!projectSection) {
         console.error("projects could not be found");
@@ -28,8 +27,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     const projectList = document.getElementById("projectList");
-  
-
 
     fetch("https://api.github.com/users/abrahamflres/repos")
         .then(response => {
@@ -37,19 +34,19 @@ document.addEventListener("DOMContentLoaded", () => {
             return response.json();
         })
         .then(repositories => {
-            console.log("respository's", repositories);
+            console.log("repositories", repositories);
             displayRepositories(repositories);
         })
         .catch(error => {
             console.error("Error fetching repositories:", error);
-            projectList.innerHTML = `<p style="color: red;">could not load respositories</p>`;
+            projectList.innerHTML = `<p style="color: red;">Could not load repositories</p>`;
         });
 
     function displayRepositories(repositories) {
         projectList.innerHTML = ""; 
 
         if (repositories.length === 0) {
-            projectList.innerHTML = "<p>no projects</p>";
+            projectList.innerHTML = "<p>No projects</p>";
             return;
         }
 
@@ -58,16 +55,56 @@ document.addEventListener("DOMContentLoaded", () => {
             projectItem.classList.add("project-item");
             projectItem.innerHTML = `
                 <strong>${repo.name}</strong><br>
-                <p>${repo.description || "null description"}</p>
+                <p>${repo.description || "No description available"}</p>
                 <a href="${repo.html_url}" target="_blank">View Repository</a>
             `;
             projectList.appendChild(projectItem);
         });
     }
+
+
+    const messageForm = document.forms['leave_message'];
+
+    messageForm.addEventListener('submit', (event) => {
+        event.preventDefault();
+
+        const usersName = event.target.usersName.value;
+        const usersEmail = event.target.usersEmail.value;
+        const usersMessage = event.target.usersMessage.value;
+
+        console.log("Name:", usersName);
+        console.log("Email:", usersEmail);
+        console.log("Message:", usersMessage);
+
+        
+        messageForm.reset();
+
+        
+        const messageSection = document.getElementById("messages");
+        const messageList = messageSection.querySelector("ul");
+
+        const newMessage = document.createElement("li");
+        newMessage.innerHTML = `
+            <a href=" ${usersEmail}">${usersName}</a>:
+            <span>${usersMessage}</span>
+        `;
+
+        const removeButton = document.createElement("button");
+        removeButton.innerText = "Remove";
+        removeButton.type = "button";
+
+        removeButton.addEventListener('click', () => {
+            const entry = removeButton.parentNode;
+            entry.remove();
+        });
+
+        newMessage.appendChild(removeButton);
+        messageList.appendChild(newMessage);
+    });
+
 });
 
 function toggleMenu() {
     const navList = document.querySelector('.nav-list');
     navList.classList.toggle('show');
 }
-
